@@ -1,6 +1,8 @@
-/********************************************************************
- * This program demonstrates...
- ********************************************************************/ 
+/*****************************************************************************
+ * This model program demonstrates how constructors and operator= work.
+ * Default, parameterized, copy, move constructors and also copy and move 
+ * assignments are considered.
+ *****************************************************************************/ 
 
 #include <cstdint>
 #include <iostream>
@@ -213,7 +215,3 @@ int main()
 		
 	cout << "\n-----Destructing-----\n";
 }
-
-
-
-
