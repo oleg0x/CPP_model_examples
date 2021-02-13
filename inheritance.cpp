@@ -83,6 +83,14 @@ private:
 
 
 
+void PrintVptr(void* p)
+{
+	auto p2 = reinterpret_cast<size_t*>(p);
+	cout << "Vpointer: " << *p2 << '\n';
+}
+
+
+
 int main ()
 {
 	{
@@ -132,6 +140,9 @@ int main ()
 	}
 	
 	{
-		
+		Ccc c1(1), c2(2);
+		cout << '\n';
+		PrintVptr(&c1);  // The same vtable as for 'c2'
+		PrintVptr(&c2);  // The same vtable as for 'c1'
 	}
 }
