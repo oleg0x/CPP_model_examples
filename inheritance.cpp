@@ -1,7 +1,8 @@
 /*****************************************************************************
  * This model program demonstrates inheritance of classes and peculiarities 
  * of working with corresponding objects via variables and pointers, 
- * including dynamic_cast conversion
+ * including dynamic_cast conversion. It also demonstrates calls of virtual
+ * functions from constructors.
  *****************************************************************************/ 
 
 #include <iostream>
@@ -20,10 +21,7 @@ public:
 	{
 		cout << "\nAaa constructor    ";
 	}
-	virtual ~Aaa()
-	{
-		cout << "Aaa destructor\n";
-	}
+	virtual ~Aaa() { cout << "Aaa destructor\n"; }
 	/*virtual*/ void DoSomethingBase() const  // This function is not virtual
 	{
 		cout << "Base: " << data_ << '\n';
@@ -49,10 +47,7 @@ public:
 	{
 		cout << "Bbb constructor    ";
 	}
-	~Bbb()
-	{
-		cout << "Bbb destructor    ";
-	}
+	~Bbb() { cout << "Bbb destructor    "; }
 	virtual void DoSomethingPolymorph() override
 	{
 		var_ *= 2;
@@ -66,7 +61,7 @@ public:
 class Ccc : public Bbb
 {
 public:
-	explicit Ccc(Type2 data)  : Bbb(data)
+	explicit Ccc(Type2 data) : Bbb(data)
 	{
 		cout << "Ccc constructor    ";
 	}
@@ -88,6 +83,47 @@ void PrintVptr(void* p)
 	auto p2 = reinterpret_cast<size_t*>(p);
 	cout << "Vpointer: " << *p2 << '\n';
 }
+
+
+
+class Base
+{
+public:
+	Base()
+	{
+		cout << "Base::Base(), ";
+		PrintVptr(this);
+		VirtFunc();  // Always called Base::VirtFunc(), though it's virtual
+//		AnotherVirtFunc();  // Warning: call to pure virtual function has undefined behavior;
+	}	                    // overrides in subclasses are not available here
+	virtual ~Base()
+	{
+		cout << "Base::~Base(), ";
+		PrintVptr(this);
+	}
+	virtual void VirtFunc() { cout << "Base::VirtFunc()" << '\n'; }
+	virtual void AnotherVirtFunc() = 0;  // Pure virtual function
+};
+
+
+
+class Derived : public Base
+{
+public:
+	Derived()
+	{
+		cout << "Derived::Derived(), ";
+		PrintVptr(this);
+		AnotherVirtFunc();
+	}
+	~Derived()
+	{
+		cout << "Derived::~Derived(), ";
+		PrintVptr(this);
+	}
+	void VirtFunc() override { cout << "Derived::VirtFunc" << '\n'; }
+	void AnotherVirtFunc() override { cout << "Derived::AnotherVirtFunc" << '\n'; }
+};
 
 
 
@@ -144,5 +180,12 @@ int main ()
 		cout << '\n';
 		PrintVptr(&c1);  // The same vtable as for 'c2'
 		PrintVptr(&c2);  // The same vtable as for 'c1'
+	}
+	
+	{
+//		Base b;  // Compilation error: cannot declare variable ‘b’ to be of abstract type
+		cout << '\n';
+		Base* p = new Derived;
+		delete p;
 	}
 }
