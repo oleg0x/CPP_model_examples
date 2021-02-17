@@ -73,6 +73,10 @@ int main()
 	{
 		cout << ex.what() << '\n';
 	}
+	catch (...)
+	{
+		cout << "Unknown exception!" << '\n';
+	}
 	
 	NoexceptFunc(100);
 	cout << std::boolalpha

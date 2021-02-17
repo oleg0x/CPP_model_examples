@@ -5,10 +5,11 @@
  *****************************************************************************/ 
 
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <string>
-#include <cstring>
 #include <utility>
+#include <vector>
 
 using namespace std;
 
@@ -42,7 +43,7 @@ private:
 
 
 
-/* SomeClass::SomeClass()  // Default constructor
+/* SomeClass::SomeClass()  // Default constructor deleted
 {
 	cout << "SomeClass :: default constructor,  size_ = " << size_ 
 		 << ", name = " << name_ << ".\n";
@@ -212,6 +213,13 @@ int main()
 
 	sc9 = move(sc9);			// Self-assignment is working properly
 	cout << sc9;
+	
+	cout << "\n-----Vector-----\n";
+	
+	vector<SomeClass> v;
+	v.reserve(4);
+	v.push_back(SomeClass(10));     // Parameterized ctor, move ctor
+	v.emplace_back(SomeClass(13));  // The same as for push_back
 		
 	cout << "\n-----Destructing-----\n";
 }
