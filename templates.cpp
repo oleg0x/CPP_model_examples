@@ -65,7 +65,7 @@ constexpr array<T, 3> some_const_arr {1.11, 2.22, 3.33};  // Variable template
 
 
 template <typename T, typename ... Tail>  // Variadic template
-void Print(T head, Tail... tail)
+void Print(const T& head, const Tail&... tail)
 {
 	cout << head << ' ';
 	if  constexpr( sizeof...(tail) > 0 )  Print(tail...);
@@ -74,11 +74,19 @@ void Print(T head, Tail... tail)
 
 
 template <typename ... T>  // Variadic template
-void Print2(T&&... args)
+void Print2(T&& ... args)  // Forwarding references
 {
+//	std::forward<T>(t)
 	(cout << ... << args) << '\n';  // Fold expression
 }
 
+
+
+template <typename ... Args>  // Variadic template
+void Clear(Args& ... args)
+{
+	(args.clear(), ...);
+}
 
 
 template <class T1,                         // Parameter-type
@@ -136,6 +144,11 @@ int main()
 		Print(true, 5, 10.75, "abcd");
 		cout << '\n';
 		Print2(4, ' ', 12.67, ' ', "Hello");
+		
+		vector v {1, 2, 3, 4, 5};
+		string s {"Some string"};
+		Clear(v, s);
+		cout << v.size() << ' ' << s.size() << '\n';
 	}
 	
 	{

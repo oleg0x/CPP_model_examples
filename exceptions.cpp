@@ -12,10 +12,22 @@ void AnotherFunc(int n);
 
 
 
-struct S
+struct Foo
 {
-	S()  { cout << "S constructed\n"; }
-	~S() { cout << "S destroyed\n"; }
+	Foo()  { cout << "Foo constructed\n"; }
+	~Foo() { cout << "Foo destroyed\n"; }
+};
+
+
+
+struct Bar
+{
+	Bar()
+	{
+		cout << "Bar is constructing...\n";
+		throw runtime_error("Some exception!");
+	}
+	~Bar() { cout << "Bar destroyed\n"; }  // Dtor will not be called
 };
 
 
@@ -39,7 +51,7 @@ void SomeFunc(int n)  // Catches and rethrows an exception from AnotherFunc
 
 void AnotherFunc(int n)  // A potentially-throwing function
 {
-	S obj;
+	Foo obj;
 	n -= 10;
 	if ( n < 0 )
 		throw invalid_argument("AnotherFunc: invalid argument!");
@@ -66,7 +78,7 @@ int main()
 {
 	try
 	{
-		SomeFunc(100);
+		SomeFunc(30);
 		SomeFunc(5);
 	}
 	catch ( invalid_argument& ex )
@@ -83,10 +95,15 @@ int main()
 		 << "Is SomeFunc noexcept? " << noexcept(SomeFunc(1)) << '\n'
 		 << "Is NoexceptFunc noexcept? " << noexcept(NoexceptFunc(1)) << '\n'
 		 << "Is lambda '[]{}' noexcept? " << noexcept([]{}) << '\n'
-		 << "Is lambda '[]() noexcept {}' noexcept? " << noexcept([]() noexcept {}) << '\n'
+		 << "Is lambda '[]() noexcept {}' noexcept? " << 
+			noexcept([]() noexcept {}) << '\n'
 		 << "Is MayThrow noexcept? " << noexcept(MayThrow()) << '\n'
 		 << "Is NoThrow noexcept? " << noexcept(NoThrow()) << '\n';
-	
-	NoexceptFunc(5);  //  std::terminate() is called here
-	cout << "This string will not printed\n";
+
+	Bar b;  // Dtor of 'b' will not be called
+
+	NoexceptFunc(5);
+
+	cout << "This string will not be printed\n";
+
 }
