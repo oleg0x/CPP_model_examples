@@ -19,10 +19,15 @@ using std::cout;
 struct SomeStruct
 {
 	double value;
-	SomeStruct(double d)
+	explicit SomeStruct(double d)
 	{
 		value = d;
 		cout << "SomeStruct(), " << value << '\n';
+	}
+	SomeStruct(const SomeStruct& other)
+	{
+		value = other.value;
+		cout << "SomeStruct(const SomeStruct&), " << value << '\n';
 	}
 };
 
@@ -36,7 +41,7 @@ int main()
 	SomeStruct ss(14.134725);
 	
 	auto l1 = []() {};  // The simplest lambda
-	l1();               // Call the lambda;
+	l1();               // Call the lambda
 	
 	auto l2 = []() { cout << "Simple lambda\n"; };
 	l2();
@@ -46,7 +51,7 @@ int main()
 	cout << l3(10) << '\n';
 	
 	[]() { cout << ch << '\n'; }();  // Const integral type initialized with a constant expression
-//	[]() { cout << n; }();  // Compilation error: ‘n’ is not captured
+//	[]() { cout << n << '\n'; }();   // Compilation error: ‘n’ is not captured
 	
 	[n]() { cout << n << '\n'; }();  // By-copy const capture
 //	[n]() { n += 5; cout << n; }();  // Compilation error: assignment of read-only variable ‘n’
@@ -56,15 +61,15 @@ int main()
 	[&n]() { n += 5; cout << n << '\n'; }();  // By-reference capture
 	cout << "n = " << n << '\n';  // 'n' has been changed
 	
-	auto l4 = [n, &v, ss](int i)  // Ctor of 'ss' is not called
+	auto l4 = [n, &v, ss](int i)  // Copy ctor of 'ss' is called
 	{
 		cout << n << ' ' << (v[0] += i) << ' ' <<  ss.value << '\n';
 	};
 	l4(10);
 	
-	// Capture all automatic variables by copy
+	// Capture the used automatic variables by copy
 	[=]() { cout << n << ' ' << v[2] << ' ' <<  ss.value << '\n'; }();
 	
+	// Capture the used automatic variables by reference
 	[&]() { cout << ++n << ' ' << ++v[2] << ' ' <<  ++ss.value << '\n'; }();
-	// Cpture the used automatic variables by reference
 }

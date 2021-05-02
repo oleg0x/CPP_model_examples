@@ -29,7 +29,7 @@ template <typename T> void Print(const T& c)
 int main()
 {
 	cout << exp(3) << ' ' << log(20.0855) << '\n';
-	cout << pow(123.45, 2.38) << ' ' << sqrt(500.8) << ' ' << cbrt(1000) << '\n';
+	cout << pow(123.45, 2.48) << ' ' << sqrt(510.8) << ' ' << cbrt(1000) << '\n';
 	cout << sin(0.8) << ' ' << cos(0.8) << ' ' << tan(0.8) << '\n';
 	cout << sinh(0.8) << ' ' << cosh(0.8) << ' ' << tanh(0.8) << '\n';
 	
@@ -41,13 +41,17 @@ int main()
 	errno = 0;
     cout <<  "log(0) = " << log(0) << '\n';
 	if ( errno == ERANGE )
-		cout << "errno = ERANGE (" << strerror(errno) << ")\n";
+		cout << "errno = ERANGE (" << strerror(errno) << ")\n\n";
 	
-	cout << ceil(2.7)  << ' ' << floor(2.7) << ' ' 
-	     << trunc(2.7) << ' ' << round(2.7) << '\n';
+	cout << ceil(2.3)  << ' ' << floor(2.7) << ' ' 
+	     << trunc(2.7) << ' ' << round(2.5) << '\n';
+	float f1;
+	cout << modf(3.14, &f1) << ' ' << f1 << "\n\n";
 	
-	float iptr;
-	cout << modf(3.14, &iptr) << ' ' << iptr << '\n';
+	cout << fixed << setprecision(10);
+	cout << std::numbers::sqrt2 << ' ' << std::numbers::sqrt3 << ' '
+	     << std::numbers::pi << ' ' << std::numbers::inv_pi << ' '
+	     << std::numbers::e << '\n';
 	
 	cout << beta(3, 3) << ' ' << tgamma(5) << '\n';
 	cout << cyl_bessel_j(2, 1.23) << ' ' << hermite(3, 4) 
@@ -59,11 +63,6 @@ int main()
          << "ζ(2) = "   << riemann_zeta(2)   << ' '
          << "(π²/6 = "  << pow(acos(-1),2)/6 << ").\n";
 	
-	cout << fixed << setprecision(10);
-	cout << std::numbers::sqrt2 << ' ' << std::numbers::sqrt3 << ' '
-	     << std::numbers::pi << ' ' << std::numbers::inv_pi << ' '
-	     << std::numbers::e << '\n';
-
 	cout << fixed << setprecision(2) << '\n';
 	
 	complex<double> z1;
@@ -74,11 +73,10 @@ int main()
 	cout << z2 << ' ' << z2.real() << ' ' << z2.imag() << '\n';
 	complex<float> z3 = 3.7f + 2.3if;
 	cout << z3 << ' ' << z3.real() << ' ' << z3.imag() << '\n';
-	
 	z3 = 1.f + 1.if;
 	cout << z3 << ' ' << abs(z3) << ' ' << arg(z3) << '\n';
 	
-	cout << "Square root of -4 is "	<< sqrt(complex<double>(-4, 0)) << '\n'
+	cout << "Square root of -4 is " << sqrt(complex<double>(-4, 0)) << '\n'
 	     << "Square root of (-4,-0), the other side of the cut, is "
 	     << sqrt(complex<double>(-4, -0.0)) << '\n';
 
@@ -102,13 +100,14 @@ int main()
 	vector<int> b {5, 4, 2, 3, 1};
 	int r1 = inner_product(a.begin(), a.end(), b.begin(), 0);
 	cout << "Inner product of a and b: " << r1 << '\n';
-	int r2 = inner_product(a.begin(), a.end(), b.begin(), 0, plus<>(), equal_to<>());
+	int r2 = inner_product(a.begin(), a.end(), b.begin(), 0, plus<>(), 
+	                       equal_to<>());
 	cout << "Number of pairwise matches between a and b: " <<  r2 << '\n';
 	partial_sum(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
     cout << '\n';
     
     cout << '\n';
-    valarray<int> va {1, 4, 2, 9, 5, 3};
+    valarray<int> va {1, 4, 2, 9, 5, 3};  // Supports element-wise mathematical operations
 	Print(va);
 	cout << va.size() << ' ' << va.min() << ' ' << va.max() << ' ' 
 	     << va.sum() << '\n';
