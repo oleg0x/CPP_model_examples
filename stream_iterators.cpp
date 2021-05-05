@@ -22,7 +22,7 @@ void Func1()
 	vector<string> v {ii, eos};
 	sort(v.begin(), v.end());
 	
-	ostream_iterator<string> oi {cout};
+	ostream_iterator<string> oi {cout, ", "};  // with delimiter ", "
 	unique_copy(v.begin(), v.end(), oi);
 }
 
@@ -32,7 +32,7 @@ void Func2()  // The same as Func1(), but shorter
 {
 	set<string> s { istream_iterator<string> {cin},
 	                istream_iterator<string> {} };
-	unique_copy( s.begin(), s.end(), ostream_iterator<string> {cout} );
+	unique_copy( s.begin(), s.end(), ostream_iterator<string> {cout, ", "} );
 }
 
 
@@ -41,12 +41,11 @@ int main()
 {
 	{
 		ostream_iterator<string> oi {cout};
-		*oi = "Hello, ";	// meaning cout << "Hello, "
-//		++oi;
-		*oi = "world!\n";	// meaning cout << "world!\n"
+		*oi = "Hello, ";   // meaning cout << "Hello, "
+		*oi = "world!\n";  // meaning cout << "world!\n"
 	}
 	
 //	Func1();
-	Func2();
+	Func2();  // The same
 	cout << '\n';
 }

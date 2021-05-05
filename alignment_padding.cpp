@@ -1,7 +1,10 @@
 /*****************************************************************************
  * This model program demonstrates different alignments in filds of structs,
  * bit fields and '#pragma pack' directive.
+ * clang++ alignment_padding.cpp -std=c++20 -Wpadded -Xclang -fdump-record-layouts-simple -o zzz
  *****************************************************************************/
+
+
 
 #include <iostream>
 
@@ -22,20 +25,20 @@ struct CarPlate1
 	char c2;     // 1 byte
 	char c3;     // 1 byte, padding here
 	int region;  // 4 bytes
-};         // Sum: 11 byte; Actually: 16
+};         // Sum: 11 bytes; Actually: 16 bytes
 
-#pragma pack(push, 1)  // control the maximum alignment for the next class
-struct CarPlate2  // Slower operations with this atruct!
+#pragma pack(push, 1)  // Control the maximum alignment for the next class
+struct CarPlate2  // Slower operations with this atruct
 {
 	uint16_t number;  // 2 bytes
 	char c1;          // 1 byte
 	char c2 = 'A';    // 1 byte, equal-initializer
 	char c3 {'B'};    // 1 byte, brace-initializer
 	uint16_t region;  // 2 bytes
-};               // Sum: 7 byte; Actually: 7
+};               // Sum: 7 bytes; Actually: 7 bytes
 #pragma pack(pop)
 
-struct CarPlate3  // Slower operations with this atruct!
+struct CarPlate3  // Bit-field struct; slower operations
 {
 	uint32_t number : 10;
 	uint32_t c1     : 4;
@@ -94,11 +97,9 @@ int main()
 //	&plate3.number;         // Compilation error: attempt to take address of bit-field
 //	sizeof(plate3.number);  // Compilation error: invalid application of ‘sizeof’ to a bit-field
 		
-	Derived d;
-	d.i = 100;
 	Aggregator a;
-	a.b1.i = 200;
+	a.b1.i = 100;
+	Derived d;
+	d.i = 200;
 	cout << d.i << ' ' << a.b1.i << '\n';
 }
-
-// clang++ alignment_padding.cpp -std=c++20 -Wpadded -Xclang -fdump-record-layouts-simple -o zzz
