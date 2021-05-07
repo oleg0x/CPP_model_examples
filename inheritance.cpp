@@ -1,8 +1,7 @@
 /*****************************************************************************
  * This model program demonstrates inheritance of classes and peculiarities 
- * of working with corresponding objects via variables and pointers, 
- * including dynamic_cast conversion. It also demonstrates calls of virtual
- * functions from constructors.
+ * of working with corresponding objects via variables and pointers. It also 
+ * demonstrates calls of virtual functions from constructors.
  *****************************************************************************/ 
 
 #include <iostream>
@@ -21,14 +20,17 @@ public:
 	{
 		cout << "\nAaa constructor    ";
 	}
-	virtual ~Aaa() { cout << "Aaa destructor\n"; }
-	/*virtual*/ void DoSomethingBase() const  // This function is not virtual
+	virtual ~Aaa()
 	{
-		cout << "Base: " << data_ << '\n';
+		cout << "Aaa destructor\n";
+	}
+	void DoSomethingBase() const  // This function is not virtual
+	{
+		cout << "Aaa: " << data_ << '\n';
 	}
 	virtual void DoSomethingPolymorph()
 	{
-		cout << var_ << " aaaaa\n";
+		cout << var_ << " Aaa\n";
 	}
 
 protected:
@@ -47,12 +49,15 @@ public:
 	{
 		cout << "Bbb constructor    ";
 	}
-	~Bbb() { cout << "Bbb destructor    "; }
+	~Bbb()
+	{
+		cout << "Bbb destructor    ";
+	}
 	virtual void DoSomethingPolymorph() override
 	{
 		var_ *= 2;
 //		data_ += 10;  // Compilation error: Aaa::data_ is private within this context
-		cout << var_ << " bbbbb\n";		
+		cout << var_ << " Bbb\n";		
 	}
 };
 
@@ -65,15 +70,18 @@ public:
 	{
 		cout << "Ccc constructor    ";
 	}
-	~Ccc() { cout << "Ccc destructor    "; }
+	~Ccc()
+	{
+		cout << "Ccc destructor    ";
+	}
 	void DoSomethingBase() const  // Non-virtual function with the same name
 	{
-		cout << "Derived: " << ch_ << '\n';
+		cout << "Ccc: " << ch_ << '\n';
 	}
-	// Member function DoSomething() is not overrided in this class
+	// Member function DoSomethingPolymorph() is not overrided in this class
 
 private:
-	char ch_ = '*';
+	char ch_ = '#';
 };
 
 
@@ -95,7 +103,7 @@ public:
 		PrintVptr(this);
 		VirtFunc();  // Always called Base::VirtFunc(), though it's virtual
 //		AnotherVirtFunc();  // Warning: call to pure virtual function has undefined behavior;
-	}	                    // overrides in subclasses are not available here
+	}                       // overrides in subclasses are not available here
 	virtual ~Base()
 	{
 		cout << "Base::~Base(), ";
@@ -144,8 +152,8 @@ int main ()
 		
 		Ccc c(102);
 		cout << '\n';
-		c.DoSomethingBase();  // Ccc::DoSomethingBase() is called
-		c.DoSomethingPolymorph();
+		c.DoSomethingBase();       // Ccc::DoSomethingBase() is called
+		c.DoSomethingPolymorph();  // Bbb::DoSomethingPolymorph() is called
 		
 		cout << '\n';
 		// Here these objects are destroyed in reverse order.
@@ -168,7 +176,7 @@ int main ()
 		cout << '\n';
 		p_c->DoSomethingBase();   // Aaa::DoSomethingBase() is called
 		dynamic_cast<Ccc*>(p_c)->DoSomethingBase();  // Ccc::DoSomethingBase() is called
-		p_c->DoSomethingPolymorph();
+		p_c->DoSomethingPolymorph();  // Bbb::DoSomethingPolymorph() is called
 	
 		delete p_a;
 		delete p_b;  // Destructors are called in reverse order: Bbb, Aaa.
@@ -176,7 +184,8 @@ int main ()
 	}
 	
 	{
-		Ccc c1(1), c2(2);
+		Ccc c1(1);
+		Ccc c2(2);
 		cout << '\n';
 		PrintVptr(&c1);  // The same vtable as for 'c2'
 		PrintVptr(&c2);  // The same vtable as for 'c1'

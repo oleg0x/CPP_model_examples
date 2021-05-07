@@ -21,50 +21,51 @@ using Data = int;
 class SomeClass
 {
 public:
-	SomeClass() = delete;							// Default constructor is deleted
-	explicit SomeClass(const Size size);			// Explicit parameterized constructor
-	SomeClass(const Size size, const string& name);	// Parameterized constructor
-	SomeClass(const SomeClass& other);				// Copy constructor
-	SomeClass(SomeClass&&  other);					// Move constructor
+	SomeClass() = delete;                      // Default constructor is deleted
+	explicit SomeClass(Size size);             // Explicit parameterized constructor
+	SomeClass(Size size, const string& name);  // Parameterized constructor
+	SomeClass(const SomeClass& other);         // Copy constructor
+	SomeClass(SomeClass&& other);              // Move constructor
 
-	virtual ~SomeClass();							// Destructor
+	~SomeClass();  // Destructor
 	
-	const SomeClass& operator =(const SomeClass& other);	// Copy assignment
-	const SomeClass& operator =(SomeClass&& other);			// Move assignment
+	const SomeClass& operator =(const SomeClass& other);  // Copy assignment
+	const SomeClass& operator =(SomeClass&& other);       // Move assignment
 	
-	virtual const SomeClass& DoSomething(const Data value);
-	friend ostream& operator<<(ostream& out, const SomeClass& sc);
+	const SomeClass& DoSomething(Data value);
 
 private:
 	Size size_ = 0;
 	Data* p_data_ = nullptr;
 	string name_ = "DefaultName";
+	
+	friend ostream& operator<<(ostream& out, const SomeClass& sc);
 };
 
 
 
 /* SomeClass::SomeClass()  // Default constructor deleted
 {
-	cout << "SomeClass :: default constructor,  size_ = " << size_ 
-		 << ", name = " << name_ << ".\n";
+	cout << "SomeClass::default_constructor,  size_ = " << size_ 
+	     << ", name = " << name_ << ".\n";
 } */
 
 
 
-SomeClass::SomeClass(const Size size)  // Parameterized constructor
+SomeClass::SomeClass(Size size)  // Parameterized constructor
 	: size_ {size}, p_data_ {new Data[size_]}
 {
 	cout << "Parameterized constructor,  size_ = " << size_ 
-		 << ", name = " << name_ << ".\n";
+	     << ", name = " << name_ << ".\n";
 }
 
 
 
-SomeClass::SomeClass(const Size size, const string& name)  // Parameterized constructor
+SomeClass::SomeClass(Size size, const string& name)  // Parameterized constructor
 	: size_ {size}, p_data_ {new Data[size_]}, name_ {name}
 {
 	cout << "Parameterized constructor,  size_ = " << size_ 
-		 << ", name = " << name_ << ".\n";
+	     << ", name = " << name_ << ".\n";
 }
 
 
@@ -74,7 +75,7 @@ SomeClass::SomeClass(const SomeClass& other)  // Copy constructor
 {
 	memcpy(p_data_, other.p_data_, sizeof(Data) * size_);
 	cout << "Copy constructor,  size_ = " << size_ 
-		 << ", name = " << name_ << ".\n";
+	     << ", name = " << name_ << ".\n";
 }
 
 
@@ -86,8 +87,7 @@ SomeClass::SomeClass(SomeClass&& other)  // Move constructor
 	other.p_data_ = nullptr;
 //	other.name_ = "DefaultName";  // "What you don’t use, you don’t pay for (zero-overhead rule)"
 	cout << "Move constructor,  size_ = " << size_ 
-		 << ", name = " << name_ << ".\n";
-
+	     << ", name = " << name_ << ".\n";
 }
 
 
@@ -103,7 +103,7 @@ SomeClass::~SomeClass()
 
 const SomeClass& SomeClass::operator=(const SomeClass& other)  // Copy assignment
 {
-	if ( this != &other )
+	if ( &other != this )
 	{
 		delete[] p_data_;
 		size_ = other.size_;
@@ -120,7 +120,7 @@ const SomeClass& SomeClass::operator=(const SomeClass& other)  // Copy assignmen
 
 const SomeClass& SomeClass::operator=(SomeClass&& other)  // Move assignment
 {
-	if ( this != &other )
+	if ( &other != this )
 	{
 		delete[] p_data_;
 		size_ = other.size_;
@@ -137,10 +137,9 @@ const SomeClass& SomeClass::operator=(SomeClass&& other)  // Move assignment
 
 
 
-const SomeClass& SomeClass::DoSomething(const Data value)
+const SomeClass& SomeClass::DoSomething(Data value)
 {
-	for ( Size i = 0; i < size_; ++i )
-		p_data_[i] = value;
+	for ( Size i = 0; i < size_; ++i )  p_data_[i] = value;
 	cout << name_ << ": do something.\n";
 	return *this;
 }
@@ -150,13 +149,11 @@ const SomeClass& SomeClass::DoSomething(const Data value)
 ostream& operator<<(ostream& out, const SomeClass& sc)
 {
 	out << sc.name_ << ":";
-	if ( sc.size_ == 0 )
-		out << " empty\n";
+	if ( sc.size_ == 0 )  out << " empty";
 	else
 	{
-		for ( Size i = 0; i < sc.size_; ++i )
-			out << ' ' << sc.p_data_[i];
-		out << '\n';
+		for ( Size i = 0; i < sc.size_; ++i )  out << ' ' << sc.p_data_[i];
+//		out << '\n';
 	}
 	return out;
 }
@@ -167,59 +164,59 @@ int main()
 {
 	cout << "\n-----Creating-----\n";
 	
-//	SomeClass sc0;				// Compilation error: use of deleted function!
+//	SomeClass sc0;        // Compilation error: use of deleted function!
 	
-//	SomeClass sc1 = 100;		// Compilation error: conversion from ‘int’ to non-scalar type
+//	SomeClass sc1 = 100;  // Compilation error: conversion from ‘int’ to non-scalar type
 	
 	SomeClass sc2(5);
-	cout << sc2 << sc2.DoSomething(1);
+	cout << sc2 << '\n' << sc2.DoSomething(1) << '\n';
 	
 	SomeClass sc3(9, "ObjectName");
-	cout << sc3 << sc3.DoSomething(2);
+	cout << sc3 << '\n' << sc3.DoSomething(2) << '\n';
 	
 	cout << "\n-----Coping-----\n";
 	
-	SomeClass sc4(sc3);			// Copy constructor is used
-	cout << sc4;
+	SomeClass sc4(sc3);   // Copy constructor is used
+	cout << sc4 << '\n';
 	
-	SomeClass sc5 = sc3;		// Copy constructor is used
-	cout << sc5;
+	SomeClass sc5 = sc3;  // Copy constructor is used
+	cout << sc5 << '\n';
 	
-	SomeClass sc6 {sc3};		// Copy constructor is used
-	cout << sc6 << sc3;
+	SomeClass sc6 {sc3};  // Copy constructor is used
+	cout << sc6 << '\n' << sc3 << '\n';
 
-	sc6 = sc2;					// Copy assignment is used	
-	cout << sc6 << sc2;
+	sc6 = sc2;            // Copy assignment is used
+	cout << sc6 << '\n' << sc2 << '\n';
 	
-	sc6 = sc6;					// Self-assignment is working properly
-	cout << sc6;
+	sc6 = sc6;            // Self-assignment is working properly
+	cout << sc6 << '\n';
 	
 	sc2 = sc3 = sc4.DoSomething(3);
-	cout << sc2 << sc3 << sc4;
+	cout << sc2 << '\n' << sc3 << '\n' << sc4 << '\n';
 	
 	cout << "\n-----Moving-----\n";
 	
-	SomeClass sc7(move(sc2));	// Move constructor is used
-	cout << sc7 << sc2;
+	SomeClass sc7(move(sc2));   // Move constructor is used
+	cout << sc7 << '\n' << sc2 << '\n';
 		
-	SomeClass sc8 = move(sc3);	// Move constructor is used
-	cout << sc8 << sc3;
+	SomeClass sc8 = move(sc3);  // Move constructor is used
+	cout << sc8 << '\n' << sc3 << '\n';
 	
-	SomeClass sc9 {move(sc4)};	// Move constructor is used
-	cout << sc9 << sc4;
+	SomeClass sc9 {move(sc4)};  // Move constructor is used
+	cout << sc9 << '\n' << sc4 << '\n';
 	
-	sc9 = move(sc7);			// Move assignment is used
-	cout << sc9 << sc7;
+	sc9 = move(sc7);            // Move assignment is used
+	cout << sc9 << '\n' << sc7 << '\n';
 
-	sc9 = move(sc9);			// Self-assignment is working properly
-	cout << sc9;
+	sc9 = move(sc9);            // Self-assignment is working properly
+	cout << sc9 << '\n';
 	
 	cout << "\n-----Vector-----\n";
 	
 	vector<SomeClass> v;
 	v.reserve(4);
-	v.push_back(SomeClass(10));     // Parameterized ctor, move ctor
-	v.emplace_back(SomeClass(13));  // The same as for push_back
+	v.push_back(SomeClass(10, "Foo"));  // Parameterized ctor, move ctor, dtor
+	v.emplace_back(13, "Bar");          // Parameterized ctor only
 		
 	cout << "\n-----Destructing-----\n";
 }
