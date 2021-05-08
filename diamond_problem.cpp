@@ -12,8 +12,8 @@ using std::cout;
 struct Base
 {
 	explicit Base(int i) : data(i) { cout << "Base::Base  " << data << '\n'; }
-	void NonVirtFoo() { cout << "Base::NonVirtFunc " << data << '\n'; }
-	virtual void VirtBar() { cout << "Base::VirtFunc " << data << '\n'; }
+	void NonVirtFunc() { cout << "Base::NonVirtFunc " << data << '\n'; }
+	virtual void VirtFunc() { cout << "Base::VirtFunc " << data << '\n'; }
 	int data;
 };
 
@@ -39,11 +39,13 @@ public:
 	Diamond(int i) : Left(i), Right(i + 1)
 	{
 		cout << "Diamond::Diamond  ";
-//		cout << data << '\n';  // Compilation error: reference to ‘data’ is ambiguous
+//		cout << data;  // Compilation error: reference to ‘data’ is ambiguous
 		Left::data *= 2;   // Fild 'data' is available from both parent structs
-		Right::data *= 3;  // Fild 'data' is available from both parent structs
+		Right::data *= 3;
 		cout << Left::data << "  " << Right::data << '\n';
 	}
+//	void VirtFunc() { cout << "Diamond::VirtFunc " << data << '\n'; }
+//	Compilation error: reference to ‘data’ is ambiguous
 };
 
 //---------------------------------------------------------
@@ -67,8 +69,8 @@ class VDiamond : public VLeft, public VRight
 public:
 	VDiamond(int i) : Base(i), VLeft(i + 1), VRight(i + 2)
 	{
-		cout << "VDiamond::VDiamond  " << data << "  " 
-		     << VLeft::data << "  " << VRight::data << '\n';  // All values are the same
+		cout << "VDiamond::VDiamond  " << data << "  " << VLeft::data << "  " 
+		     << VRight::data << '\n';  // All three values are the same
 	}
 };
 
@@ -77,15 +79,18 @@ public:
 int main()
 {
 	Diamond d(5);
-//	d.NonVirtFoo();  // Compilation error: equest for member ‘NonVirtFoo’ is ambiguous
-//	d.VirtBar();     // Compilation error: equest for member ‘VirtBar’ is ambiguous
-	static_cast<Left>(d).NonVirtFoo();
-	static_cast<Right>(d).VirtBar();
+//	d.NonVirtFoo();  // Compilation error: request for member ‘NonVirtFoo’ is ambiguous
+//	d.VirtBar();     // Compilation error: request for member ‘VirtBar’ is ambiguous
+	static_cast<Left>(d).NonVirtFunc();
+	static_cast<Right>(d).NonVirtFunc();
+	static_cast<Left>(d).VirtFunc();
+	static_cast<Right>(d).VirtFunc();
+//	static_cast<Base>(d).NonVirtFunc();  // Compilation error: ‘Base’ is an ambiguous base of ‘Diamond’
+//	static_cast<Base>(d).VirtFunc();     // Compilation error: ‘Base’ is an ambiguous base of ‘Diamond’
+//	d.VirtFunc();
 	
 	cout << '\n';
-	
 	VDiamond vd(100);
-	vd.NonVirtFoo();
-	vd.VirtBar();
-
+	vd.NonVirtFunc();
+	vd.VirtFunc();
 }
