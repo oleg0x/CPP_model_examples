@@ -39,7 +39,8 @@ optional<string> Func2(int16_t n)
 		string str("Func2: some_string");
 		return str;
 	}
-	return {};
+//	return nullopt;
+	return {};  // The same
 }
 
 
@@ -69,11 +70,11 @@ using Node = variant<Expression, Statement/*, Declaration, Type*/>;
 
 void Check(Node* p)
 {
-	visit(overloaded {
+	visit( overloaded {
 		[](Expression& e) { cout << "Expression " << e.ch << '\n'; },
 		[](Statement& s)  { cout << "Statement "  << s.i <<'\n'; },
 		// Declaration, Type
-	}, *p);
+	}, *p );
 }
 
 
@@ -83,23 +84,25 @@ int main()
 	for ( int16_t i : {1, -1} )
 		if ( auto s = Func1(i); holds_alternative<string>(s) )
 		{
-			cout << get<string>(s) << '\n';
-			cout << get<0>(s) << '\n';  // Here is the same
+			string str = get<string>(s);
+			str = get<0>(s);  // 0-based index of the alternative
+			cout << str << '\n';
 		}
 		else
 		{
 			int code = get<int>(s);
-			code = get<1>(s);  // Here is the same
+			code = get<1>(s);  // 0-based index of the alternative
 			cout << "Error code: " << code << '\n';
 		}
 
 	cout << '\n';
 	for ( int16_t i : {1, -1} )
-		if ( auto s = Func2(i); s.has_value() )
-//		if ( auto s = Func2(i) )  // The same, but shorter
+//		if ( auto s = Func2(i); s.has_value() )
+		if ( auto s = Func2(i) )  // The same, but shorter
 		{
-			cout << *s << '\n';
-			cout << s.value() << '\n';
+			string str = *s;
+			str = s.value();
+			cout << str << '\n';
 		}
 		else  cout << "Object of std::optional is empty\n";
 	cout << Func2(-10).value_or("Optional is empty\n");
@@ -107,6 +110,7 @@ int main()
 	cout << '\n';
 	cout << any_cast<string>(Func3(1)) << '\n';
 	cout << any_cast<int>(Func3(-1)) << '\n';
+	
 	any a;
 	if ( !a.has_value() )  cout << "Object of std::any is empty\n";
 	a = 3.14;

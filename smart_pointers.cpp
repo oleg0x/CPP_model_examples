@@ -15,8 +15,8 @@ using namespace std;
 struct Base
 {
 	int data;
-	Base(int i) : data {i} { cout << "Base::Base()\n"; }
-	virtual ~Base() { cout << "Base::~Base()\n"; }
+	Base(int i) : data {i} { cout << "Base::Base() " << data << '\n'; }
+	virtual ~Base() { cout << "Base::~Base() " << data << '\n'; }
 	virtual void DoSomething() { cout << "Base::DoSomething() " << data << '\n'; }
 };
 
@@ -24,8 +24,8 @@ struct Base
 
 struct Derived : public Base
 {
-	Derived(int i) : Base(i) { cout << "Derived::Derived()\n"; }
-	~Derived() { cout << "Derived::~Derived()\n"; }
+	Derived(int i) : Base(i) { cout << "Derived::Derived() " << data << '\n'; }
+	~Derived() { cout << "Derived::~Derived() " << data << '\n'; }
 	void DoSomething() override { cout << "Derived::DoSomething() " << data << '\n'; }
 };
 
@@ -76,7 +76,7 @@ int main()
 		auto p2 = make_unique<Base>(20);  // unique_ptr to Base
 		p2->DoSomething();
 //		p1 = p2;  // Compilation error: use of deleted function 'operator='
-		p1 = move(p2);  // The object managed by p2 is destroyed here
+		p1 = move(p2);  // The object managed by p1 is destroyed here
 //		p2 = move(p1);  // Also OK
 		p1->DoSomething();
 //		p2->DoSomething();  // Runtime error: segmentation fault
@@ -117,7 +117,6 @@ int main()
 			// Has to be copied into a shared_ptr before usage
 			if ( auto spt = w_p.lock() )  cout << *spt << "\n";
 		}
-		
 		if ( !w_p.lock() )
 			cout << "use_count == " << w_p.use_count() << ": gw is expired\n";
 	}

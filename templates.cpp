@@ -32,7 +32,7 @@ public:
 		for ( auto i = 0; i < N; ++i )  buf[i] = 0;
 	}
 	constexpr int Size() { return N; }
-	SomeClass DoSomething()
+	SomeClass& DoSomething()
 	{
 		for ( auto i = 0; i < N; ++i )  buf[i] = 2 * i + 100;
 		return *this;
@@ -51,7 +51,7 @@ private:
 template <typename Cont, typename  Oper>
 void ForAll(Cont& c, Oper op)
 {
-	for ( auto& x : c )  op(x);
+	for ( auto& elem : c )  op(elem);
 }
 
 
@@ -68,7 +68,8 @@ template <typename T, typename ... Tail>  // Variadic template
 void Print(const T& head, const Tail&... tail)
 {
 	cout << head << ' ';
-	if  constexpr( sizeof...(tail) > 0 )  Print(tail...);
+	if constexpr ( sizeof...(tail) > 0 )  // Constexpr if statement
+		Print(tail...);  // Never instantiated with an empty 'tail'
 }
 
 
@@ -76,7 +77,6 @@ void Print(const T& head, const Tail&... tail)
 template <typename ... T>  // Variadic template
 void Print2(T&& ... args)  // Forwarding references
 {
-//	std::forward<T>(t)
 	(cout << ... << args) << '\n';  // Fold expression
 }
 
@@ -89,6 +89,7 @@ void Clear(Args& ... args)
 }
 
 
+
 template <class T1,                         // Parameter-type
           typename T2,                      // Parameter-type
           uint16_t N,
@@ -96,10 +97,9 @@ template <class T1,                         // Parameter-type
           typename Character = char>        // Default parameter
 struct SomeStruct
 {
-	T1 t1_[N];
-	T2 t2_;
-	Character ch_;
-	
+	T1 t1[N];
+	T2 t2;
+	Character ch;
 	template <typename T> T DoSomething(T t);  // Function template in class template
 };
 
@@ -126,21 +126,21 @@ int main()
 	
 	{
 		vector<int> v {10, 15, 20, 25, 30};
-		ForAll( v, [](auto& x){ x = x * 2 + 1; cout << x << ' '; } );
-		cout << endl;
-		list<float> l {10.5, 20.3, 30.8, 40,7};
-		ForAll( l, [](auto& x){ x /= 3; cout << x << ' '; } );
-		cout << endl;
+		ForAll( v, [](auto& x) { x = x * 2 + 1; cout << x << ' '; } );
+		cout << '\n';
+		list<float> l {10.5, 20.3, 30.8, 40.7};
+		ForAll( l, [](auto& x) { x /= 3; cout << x << ' '; } );
+		cout << '\n';
 	}
 	
 	{
 		cout << some_const<float> << ' ' << some_const<double> << '\n';
 		cout << some_const_arr<float>[0] << ' ' << some_const_arr<float>[1]
-			 << ' ' << some_const_arr<float>[2];
-		cout << endl;
+		     << ' ' << some_const_arr<float>[2] << '\n';
 	}
 	
 	{
+		cout << boolalpha;
 		Print(true, 5, 10.75, "abcd");
 		cout << '\n';
 		Print2(4, ' ', 12.67, ' ', "Hello");
@@ -153,7 +153,8 @@ int main()
 	
 	{
 		SomeStruct<int, char, 3, 'a'> obj;  // Instantiation
-		obj.t1_[0] = 100;  obj.t1_[1] = 101;
+		obj.t1[0] = 100;
+		obj.t1[1] = 101;
 		cout << obj.DoSomething<double>(14.134725) << '\n';
 	}
 }
