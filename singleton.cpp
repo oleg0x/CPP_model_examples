@@ -21,10 +21,8 @@ public:
 	void DoSomething(int d) { data_ = d; }
 	void Print() const { cout << "Singleton::data_ = " << data_ << '\n'; }
 
-protected:
-	Singleton() = default;  // Ctor is protected to forbid creation of the object
-
 private:
+	Singleton() = default;  // Ctor is private to forbid creation of the object
 	static Singleton* instance_;
 	int data_;
 };
@@ -35,7 +33,7 @@ Singleton* Singleton::instance_ = nullptr;
 
 int main()
 {
-//	Singleton s;  // Compilation error: Singleton() is protected within this context
+//	Singleton s;  // Compilation error: Singleton() is private within this context
 
 	Singleton* p = Singleton::Instance();
 	p->DoSomething(111);
