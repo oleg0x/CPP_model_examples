@@ -102,13 +102,12 @@ int main()
 	cout << std::boolalpha << '\n'
 	     << "Is SomeFunc noexcept? " << noexcept(SomeFunc(1)) << '\n'
 	     << "Is NoexceptFunc noexcept? " << noexcept(NoexceptFunc(1)) << '\n'
-	     << "Is lambda '[]{}' noexcept? " << noexcept([]{}) << '\n'
+	     << "Is lambda '[]{}' noexcept? " << noexcept([]{}) << '\n' // ???
 	     << "Is lambda '[]() noexcept {}' noexcept? " << 
 	         noexcept([]() noexcept {}) << '\n'
 	     << "Is MayThrow noexcept? " << noexcept(MayThrow()) << '\n'
 	     << "Is NoThrow noexcept? " << noexcept(NoThrow()) << "\n\n";
 
 	NoexceptFunc(5);  // Exception is throwed here
-
 	cout << "This string will not be printed\n";
 }

@@ -4,8 +4,6 @@
  * clang++ alignment_padding.cpp -std=c++20 -Wpadded -Xclang -fdump-record-layouts-simple -o zzz
  *****************************************************************************/
 
-
-
 #include <iostream>
 
 using std::cout;
@@ -101,5 +99,5 @@ int main()
 	a.b1.i = 100;
 	Derived d;
 	d.i = 200;
-	cout << d.i << ' ' << a.b1.i << '\n';
+	cout << a.b1.i << ' ' << d.i << '\n';
 }

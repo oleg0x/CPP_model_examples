@@ -34,7 +34,8 @@ void Print(const Cont& cont)
 template <typename Cont>
 void PrintMap(const Cont& cont)
 {
-	for ( auto [key, value] : cont )  cout << '(' << key << ", " << value << ") ";
+	for ( auto [key, value] : cont )
+		cout << '(' << key << ", " << value << ") ";
 	cout << '\n';
 }
 
@@ -49,7 +50,7 @@ int main()
 	array<int, 5> a {1, 2, 3};
 	vector<int> v {11, 12, 13};
 	deque<int> d {21, 22, 23};
-	forward_list <int> fl {31, 32, 33};
+	forward_list<int> fl {31, 32, 33};
 	list<int> l {41, 42, 43};
 	
 	cout << a.empty() << ' '
@@ -151,9 +152,9 @@ int main()
 	
 	// Associative containers -----------------------------
 	
-	set<int> s {2, 3, 1};
+	set<int> s {2, 3, 1, 3};
 	multiset<int> ms {2, 3, 1, 3};
-	unordered_set<int> us {2, 3, 1};
+	unordered_set<int> us {2, 3, 1, 3};
 	unordered_multiset<int> ums {2, 3, 1, 3};
 	
 	cout << s.empty() << ' '
@@ -161,15 +162,15 @@ int main()
 	     << us.empty() << ' '
 	     << ums.empty() << '\n';
 	
-	cout << s.size() << ' '
-	     << ms.size() << ' '
-	     << us.size() << ' '
-	     << ums.size() << '\n';
+	cout << s.size() << ' '			// 3
+	     << ms.size() << ' '		// 4
+	     << us.size() << ' '		// 3
+	     << ums.size() << '\n';		// 4
 	
 	s.insert(4);
 	ms.insert(1);
 	us.insert(4);
-	ums.insert(4);
+	ums.insert(1);
 	
 	s.erase(2);
 	ms.erase(2);

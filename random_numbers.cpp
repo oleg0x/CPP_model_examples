@@ -15,7 +15,7 @@ using namespace std;
 
 inline int GetRandom(int min, int max)
 {
-	// min + rand() % 6 would be biased
+	// min + rand() % 6 may be biased
 	return min + rand() / ((RAND_MAX + 1u) / (max - min + 1));
 }
 
@@ -24,7 +24,7 @@ inline int GetRandom(int min, int max)
 int main()
 {
 	{   // C-style simple random numbers from stdlib.h
-		srand(time(NULL));  // use current time as seed for random generator
+		srand(time(NULL));  // Use current time as seed for random generator
 		int random_var = rand();
 		cout << "Random value on [0, " << RAND_MAX << "]: "  << random_var << '\n';
 		cout << "Random value on [-3, 5]: " << GetRandom(-3, 5) << '\n';

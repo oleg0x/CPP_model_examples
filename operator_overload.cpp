@@ -1,5 +1,5 @@
 /*****************************************************************************
- * This model program demonstrates operator overloading for a class of
+ * This model program demonstrates operator overloading for the class of
  * rational numbers.
  *****************************************************************************/
 
@@ -30,11 +30,11 @@ class Rational
 {
 public:
 	Rational(int p, int q);
-	Rational& operator =(const Rational& other);
-	Rational& operator +=(const Rational& other);
-	Rational& operator -=(const Rational& other);
-	Rational& operator *=(const Rational& other);
-	Rational& operator /=(const Rational& other);
+	const Rational& operator =(const Rational& other);
+	const Rational& operator +=(const Rational& other);
+	const Rational& operator -=(const Rational& other);
+	const Rational& operator *=(const Rational& other);
+	const Rational& operator /=(const Rational& other);
 	
 private:
 	int p_;
@@ -69,7 +69,7 @@ Rational::Rational(int p, int q) : p_ {p}, q_ {q}
 
 
 
-Rational& Rational::operator=(const Rational& other)
+const Rational& Rational::operator=(const Rational& other)
 {
 //	if ( this == &right )  return *this;
 	p_ = other.p_;
@@ -79,7 +79,7 @@ Rational& Rational::operator=(const Rational& other)
 
 
 
-Rational& Rational::operator+=(const Rational& other)
+const Rational& Rational::operator+=(const Rational& other)
 {
 	p_ = p_ * other.q_ + other.p_ * q_;
 	q_ *= other.q_;
@@ -89,7 +89,7 @@ Rational& Rational::operator+=(const Rational& other)
 
 
 
-Rational& Rational::operator*=(const Rational& other)
+const Rational& Rational::operator*=(const Rational& other)
 {
 	p_ *= other.p_;
 	q_ *= other.q_;
@@ -101,7 +101,7 @@ Rational& Rational::operator*=(const Rational& other)
 
 bool operator ==(const Rational& lhs, const Rational& rhs)
 {
-	return lhs.p_ == rhs.p_ && lhs.q_ == rhs.q_;
+	return (lhs.p_ == rhs.p_ && lhs.q_ == rhs.q_);
 }
 
 

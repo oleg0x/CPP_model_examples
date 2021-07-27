@@ -1,9 +1,8 @@
 /*****************************************************************************
  * This model program in C language demonstrates how to create and use 
  * pointers, including pointers to functions and arrays of them.
+ * gcc pointers.c -std=c17 -Wall -Wextra
  *****************************************************************************/
-
-// gcc pointers.c -std=c17 -Wall -Wextra -o zzz
 
 #include <stdio.h> 
 #include <stdlib.h>
@@ -38,6 +37,11 @@ int multiply(int a, int b)
 
 int main()
 {
+	{
+		unsigned char ch = 0b01000001;
+		printf("%d\n", ch);
+	}
+	
 	{
 		// Pointers to different type variables
 		char ch = '#';
@@ -79,7 +83,7 @@ int main()
 	{
 		char str[] = "abcde";
 		char* p = str;
-		while ( *p )  *p++ = '#';
+		while ( *p )  *p++ = '@';
 		puts(str);
 	}
 
@@ -122,11 +126,11 @@ int main()
 	{
 		int *p1 = malloc(5 * sizeof(int));  // Allocates enough for an array of 5 int
 		int *p2 = malloc(sizeof(int[5]));   // Same, naming the type directly
-		int *p3 = malloc(5 * sizeof(*p3));   // Same, without repeating the type name
+		int *p3 = malloc(5 * sizeof(*p3));  // Same, without repeating the type name
 		if ( p1 ) 
 		{
 			for ( int i = 0; i < 5; ++i )  p1[i] = i;
-			printf("p1[%d] == %d\n", 2, p1[2]);
+			printf("p1[%d] == %d\n", 3s, p1[3]);
 		}
  		free(p1);
 		free(p2);

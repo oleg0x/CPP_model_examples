@@ -94,9 +94,9 @@ SomeClass::SomeClass(SomeClass&& other)  // Move constructor
 
 SomeClass::~SomeClass()
 {
-	delete[] p_data_;
+	delete[] p_data_;  // '[]' are required
 	cout << "Destructor,  size_ = " << size_ 
-		 << ", name = " << name_ << ".\n";
+	     << ", name = " << name_ << ".\n";
 }
 
 
@@ -213,8 +213,7 @@ int main()
 	
 	cout << "\n-----Vector-----\n";
 	
-	vector<SomeClass> v;
-	v.reserve(4);
+	vector<SomeClass> v(4);
 	v.push_back(SomeClass(10, "Foo"));  // Parameterized ctor, move ctor, dtor
 	v.emplace_back(13, "Bar");          // Parameterized ctor only
 		

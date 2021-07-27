@@ -29,15 +29,14 @@ template <typename T> void Print(const T& c)
 int main()
 {
 	cout << exp(3) << ' ' << log(20.0855) << '\n';
-	cout << pow(123.45, 2.48) << ' ' << sqrt(510.8) << ' ' << cbrt(1000) << '\n';
+	cout << pow(123.45, 2.3) << ' ' << sqrt(510.8) << ' ' << cbrt(1000) << '\n';
 	cout << sin(0.8) << ' ' << cos(0.8) << ' ' << tan(0.8) << '\n';
-	cout << sinh(0.8) << ' ' << cosh(0.8) << ' ' << tanh(0.8) << '\n';
+	cout << sinh(0.8) << ' ' << cosh(0.8) << ' ' << tanh(0.8) << "\n\n";
 	
 	errno = 0;
 	cout << "sqrt(-1) = " << sqrt(-1) << '\n';
 	if ( errno == EDOM )
 		cout << "errno = EDOM (" << strerror(errno) << ")\n";
-	
 	errno = 0;
     cout <<  "log(0) = " << log(0) << '\n';
 	if ( errno == ERANGE )
@@ -51,17 +50,17 @@ int main()
 	cout << fixed << setprecision(10);
 	cout << std::numbers::sqrt2 << ' ' << std::numbers::sqrt3 << ' '
 	     << std::numbers::pi << ' ' << std::numbers::inv_pi << ' '
-	     << std::numbers::e << '\n';
+	     << std::numbers::e << "\n\n";
 	
 	cout << beta(3, 3) << ' ' << tgamma(5) << '\n';
 	cout << cyl_bessel_j(2, 1.23) << ' ' << hermite(3, 4) 
 	     << laguerre(2, 0.5) << ' ' << legendre(3, 0.25) << '\n';
-	cout << "ζ(-1) = "  << riemann_zeta(-1)  << ",    "
-	     << "ζ(0) = "   << riemann_zeta(0)   << ",\n"
-	     << "ζ(1) = "   << riemann_zeta(1)   << ",    "
-         << "ζ(0.5) = " << riemann_zeta(0.5) << ",\n"
-         << "ζ(2) = "   << riemann_zeta(2)   << ' '
-         << "(π²/6 = "  << pow(acos(-1),2)/6 << ").\n";
+	cout << "ζ(-1) = "  << riemann_zeta(-1)   << ",    "
+	     << "ζ(0) = "   << riemann_zeta(0)    << ",\n"
+	     << "ζ(1) = "   << riemann_zeta(1)    << ",    "
+         << "ζ(0.5) = " << riemann_zeta(0.5)  << ",\n"
+         << "ζ(2) = "   << riemann_zeta(2)    << ' '
+         << "(π²/6 = "  << pow(acos(-1), 2)/6 << ").\n";
 	
 	cout << fixed << setprecision(2) << '\n';
 	
@@ -75,21 +74,16 @@ int main()
 	cout << z3 << ' ' << z3.real() << ' ' << z3.imag() << '\n';
 	z3 = 1.f + 1.if;
 	cout << z3 << ' ' << abs(z3) << ' ' << arg(z3) << '\n';
-	
 	cout << "Square root of -4 is " << sqrt(complex<double>(-4, 0)) << '\n'
 	     << "Square root of (-4,-0), the other side of the cut, is "
 	     << sqrt(complex<double>(-4, -0.0)) << '\n';
-
 	complex<double> z4 = 1. + 2i;
-	complex<double> z5 = conj(z4);
-	cout << "(1+2i)*(1-2i) = " << z4 * z5 << '\n';
-    
+	cout << "(1+2i)*(1-2i) = " << z4 * conj(z4) << '\n';
 	complex<double> z6 = exp(1i * numbers::pi);  // Euler's formula
 	cout << "exp(pi * i) = " << z6 << '\n';
 
 	cout << '\n';
-	vector<int> v;
-	v.resize(6);
+	vector<int> v(6);
 	iota(v.begin(), v.end(), 5);
 	Print(v);
 	int sum = accumulate(v.begin(), v.end(), 0);
@@ -100,32 +94,27 @@ int main()
 	vector<int> b {5, 4, 2, 3, 1};
 	int r1 = inner_product(a.begin(), a.end(), b.begin(), 0);
 	cout << "Inner product of a and b: " << r1 << '\n';
-	int r2 = inner_product(a.begin(), a.end(), b.begin(), 0, plus<>(), 
-	                       equal_to<>());
+	int r2 = inner_product(a.begin(), a.end(), b.begin(), 0, 
+		plus<>(), equal_to<>());
 	cout << "Number of pairwise matches between a and b: " <<  r2 << '\n';
 	partial_sum(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
-    cout << '\n';
+    cout << "\n\n";
     
-    cout << '\n';
     valarray<int> va {1, 4, 2, 9, 5, 3};  // Supports element-wise mathematical operations
 	Print(va);
 	cout << va.size() << ' ' << va.min() << ' ' << va.max() << ' ' 
 	     << va.sum() << '\n';
-	
 	valarray<int> va2 = va + 10;
 	Print(va2);
 	va *= 2;
 	Print(va);
-	
 	const valarray<int> bases     { 1, 2, 3, 4, 5, 6, 7 };
 	const valarray<int> exponents { 0, 1, 2, 3, 4, 5, 6 };
 	const valarray<int> powers = pow(bases, exponents);
 	Print(powers);
-	
 	valarray<double> v1 = {0, 0.25, 0.5, 0.75, 1};
 	valarray<double> v2 = sin(v1 * numbers::pi);
 	Print(v2);
-	
 	sort(begin(va), end(va));
 	Print(va);
 	

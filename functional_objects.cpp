@@ -1,7 +1,7 @@
 /*****************************************************************************
  * This model program demonstrates how to create and use a function object,
- * that is an object for which the function call operator () is defined, and
- * also how to create an std::function.
+ * that is an object for which the function call operator () is defined, 
+ * and also how to create an std::function.
  *****************************************************************************/
 
 #include <functional>
@@ -40,9 +40,10 @@ private:
 template <typename C, typename P>
 size_t CountIf(const C& c, P predicate)
 {
-	size_t result = 0;
-	for ( const auto& x : c )  if ( predicate(x) )  ++result;
-	return result;
+	size_t res = 0;
+	for ( const auto& x : c )
+		if ( predicate(x) )  ++res;
+	return res;
 }
 
 
@@ -57,9 +58,9 @@ int SomeFunc(double d)
 
 struct SomeStruct
 {
-    int num_;
-	explicit SomeStruct(int num) : num_(num) {}
+    explicit SomeStruct(int num) : num_(num) {}
     void PrintAdd(int i) const { cout << num_+i << '\n'; }    
+    int num_;
 };
 
 
@@ -67,7 +68,7 @@ struct SomeStruct
 int main()
 {
 	AddTo a(2);
-	cout << a(3) << ' ' << a(4) << '\n';
+	cout << a(3) << ' ' << a(100) << '\n';
 	
 	LessThan<int> lt(10);
 	cout << std::boolalpha << lt(9) << ' ' << lt(11) << '\n';
@@ -82,10 +83,10 @@ int main()
 	f2(1000);
 	
 	// Store a call to a member function
-	function<void(const SomeStruct &, int)> f3 = &SomeStruct::PrintAdd;
+	function<void(const SomeStruct&, int)> f3 = &SomeStruct::PrintAdd;
 	const SomeStruct s(100);
-	f3(s, 1);
-//	f3(100, 1);  // Compilation error: no match for call to ‘(function<void(const SomeStruct&, int)>) (int, int)’
+	f3(s, 42);
+//	f3(100, 42);  // Compilation error: no match for call to ‘(function<void(const SomeStruct&, int)>) (int, int)’
  
 	// Store a call to a data member accessor
 	function<int(SomeStruct const &)> f4 = &SomeStruct::num_;

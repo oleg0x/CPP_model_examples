@@ -32,7 +32,7 @@ void Func2()  // The same as Func1(), but shorter
 {
 	set<string> s { istream_iterator<string> {cin},
 	                istream_iterator<string> {} };
-	unique_copy( s.begin(), s.end(), ostream_iterator<string> {cout, ", "} );
+	copy( s.begin(), s.end(), ostream_iterator<string> {cout, ", "} );
 }
 
 

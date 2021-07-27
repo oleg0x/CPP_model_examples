@@ -13,24 +13,24 @@ using Type2 = int;
 
 
 
-class Aaa
+class Foo
 {
 public:
-	explicit Aaa(Type2 data) : data_ {data}
+	explicit Foo(Type2 data) : data_ {data}
 	{
-		cout << "\nAaa constructor    ";
+		cout << "\nFoo constructor    ";
 	}
-	virtual ~Aaa()
+	virtual ~Foo()
 	{
-		cout << "Aaa destructor\n";
+		cout << "Foo destructor\n";
 	}
 	void DoSomethingBase() const  // This function is not virtual
 	{
-		cout << "Aaa: " << data_ << '\n';
+		cout << "Foo: " << data_ << '\n';
 	}
 	virtual void DoSomethingPolymorph()
 	{
-		cout << var_ << " Aaa\n";
+		cout << var_ << " Foo\n";
 	}
 
 protected:
@@ -42,43 +42,43 @@ private:
 
 
 
-class Bbb : public Aaa
+class Bar : public Foo
 {
 public:
-	explicit Bbb(Type2 data) : Aaa(data)
+	explicit Bar(Type2 data) : Foo(data)
 	{
-		cout << "Bbb constructor    ";
+		cout << "Bar constructor    ";
 	}
-	~Bbb()
+	~Bar()
 	{
-		cout << "Bbb destructor    ";
+		cout << "Bar destructor    ";
 	}
-	virtual void DoSomethingPolymorph() override
+	void DoSomethingPolymorph() override
 	{
 		var_ *= 2;
 //		data_ += 10;  // Compilation error: Aaa::data_ is private within this context
-		cout << var_ << " Bbb\n";		
+		cout << var_ << " Bar\n";		
 	}
 };
 
 
 
-class Ccc : public Bbb
+class Baz : public Bar
 {
 public:
-	explicit Ccc(Type2 data) : Bbb(data)
+	explicit Baz(Type2 data) : Bar(data)
 	{
-		cout << "Ccc constructor    ";
+		cout << "Baz constructor    ";
 	}
-	~Ccc()
+	~Baz()
 	{
-		cout << "Ccc destructor    ";
+		cout << "Baz destructor    ";
 	}
 	void DoSomethingBase() const  // Non-virtual function with the same name
 	{
-		cout << "Ccc: " << ch_ << '\n';
+		cout << "Baz: " << ch_ << '\n';
 	}
-	// Member function DoSomethingPolymorph() is not overrided in this class
+	// Member function DoSomethingPolymorph() is not overridden in this class
 
 private:
 	char ch_ = '#';
@@ -89,7 +89,7 @@ private:
 void PrintVptr(void* p)
 {
 	auto p2 = reinterpret_cast<size_t*>(p);
-	cout << "Vpointer: " << *p2 << '\n';
+	cout << "Vpointer: " << p2 << ' ' << *p2 << '\n';
 }
 
 
@@ -140,60 +140,61 @@ int main ()
 	{
 		cout << "Through local variables:\n";
 		
-		Aaa a(100);
+		Foo a(100);
 		cout << '\n';
 		a.DoSomethingBase();
 		a.DoSomethingPolymorph();
 		
-		Bbb b(101);
+		Bar b(101);
 		cout << '\n';
 		b.DoSomethingBase();
 		b.DoSomethingPolymorph();
 		
-		Ccc c(102);
+		Baz c(102);
 		cout << '\n';
-		c.DoSomethingBase();       // Ccc::DoSomethingBase() is called
-		c.DoSomethingPolymorph();  // Bbb::DoSomethingPolymorph() is called
+		c.DoSomethingBase();       // Baz::DoSomethingBase() is called
+		c.DoSomethingPolymorph();  // Bar::DoSomethingPolymorph() is called
 		
 		cout << '\n';
-		// Here these objects are destroyed in reverse order.
+		// Here these objects are destroyed in reverse order
 	}
 	
 	{
 		cout << "\nThrough pointers to objects:\n";
 	
-		Aaa* p_a = new Aaa(100);  // Pointer to the base class
+		Foo* p_a = new Foo(100);  // Pointer to the base class
 		cout << '\n';
 		p_a->DoSomethingBase();
 		p_a->DoSomethingPolymorph();
 	
-		Aaa* p_b = new Bbb(101);  // Pointer to the base class
+		Foo* p_b = new Bar(101);  // Pointer to the base class
 		cout << '\n';
 		p_b->DoSomethingBase();
 		p_b->DoSomethingPolymorph();
 	
-		Aaa* p_c = new Ccc(102);  // Pointer to the base class
+		Foo* p_c = new Baz(102);  // Pointer to the base class
 		cout << '\n';
-		p_c->DoSomethingBase();   // Aaa::DoSomethingBase() is called
-		dynamic_cast<Ccc*>(p_c)->DoSomethingBase();  // Ccc::DoSomethingBase() is called
-		p_c->DoSomethingPolymorph();  // Bbb::DoSomethingPolymorph() is called
+		p_c->DoSomethingBase();   // Foo::DoSomethingBase() is called
+		dynamic_cast<Baz*>(p_c)->DoSomethingBase();  // Baz::DoSomethingBase() is called
+		p_c->DoSomethingPolymorph();  // Bar::DoSomethingPolymorph() is called
 	
+		cout << '\n';
 		delete p_a;
-		delete p_b;  // Destructors are called in reverse order: Bbb, Aaa.
-		delete p_c;  // Destructors are called in reverse order: Ccc, Bbb, Aaa.
+		delete p_b;  // Destructors are called in reverse order: Bar, Foo.
+		delete p_c;  // Destructors are called in reverse order: Baz, Bar, Foo.
 	}
 	
 	{
-		Ccc c1(1);
-		Ccc c2(2);
+		Baz c1(1);
+		Baz c2(2);
 		cout << '\n';
 		PrintVptr(&c1);  // The same vtable as for 'c2'
 		PrintVptr(&c2);  // The same vtable as for 'c1'
 	}
 	
 	{
-//		Base b;  // Compilation error: cannot declare variable ‘b’ to be of abstract type
 		cout << '\n';
+//		Base b;  // Compilation error: cannot declare variable ‘b’ to be of abstract type
 		Base* p = new Derived;
 		delete p;
 	}

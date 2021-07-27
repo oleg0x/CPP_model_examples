@@ -42,6 +42,7 @@ public:
 		for ( auto i = 0; i < N; ++i )  cout << buf[i] << ' ';
 		cout << '\n';
 	}
+
 private:
 	T buf[N];
 };

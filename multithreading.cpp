@@ -19,15 +19,15 @@ using namespace std;
 
 
 
-double Foo(double d) { cout << "Foo" << '\n'; return d * 10; }
+double Foo(double d) { cout << "Foo \n"; return d * 10; }
 
 void Bar(const vector<int>& v) { cout << "Bar \n" << v[0] << '\n'; }
 
 struct Str
 {
-	int data;
 	Str(int i) : data {i} {}
 	int operator()(int i) { cout << "Str::operator()" << '\n'; return data += i; }
+	int data;
 };
 
 void F1()  // Several threads
@@ -40,15 +40,15 @@ void F1()  // Several threads
 	
 	thread thr1(Foo, 3.14);  // The return value of the function is ignored
 	thread thr2(Bar, cref(v));  // Pass by const reference
-	thread thr3(s, 20);  // Run with a copy of object 'bar'
-	thread thr4(&Str::operator(), &s, 30);  // Run with object 'bar'
+	thread thr3(s, 20);  // runs on a copy of object 's'
+	thread thr4(&Str::operator(), &s, 30);  // runs on object s
 	
-	thr1.join();  // Blocks until the thread finishes its execution. 
+	thr1.join();  // Blocks until the thread finishes its execution
 	thr2.join();
 	thr3.join();
 	thr4.join();
 	
-	cout << s.data << '\n';
+	cout << s.data << "\n\n";
 }  // Thread objects are safe to destroy here after join()
 
 
@@ -64,19 +64,19 @@ void FillRandom(vector<int>& v, size_t start, size_t count)
 		v[i] = distr(gen);
 }
 
-void FillRandomMultiThread(vector<int>& v, uint8_t thread_count)
+void FillRandomAsync(vector<int>& v, uint8_t thread_count)
 {
-	vector<future<void>> futures;  // This vector is needed to postpone dtor of future
-	futures.reserve(thread_count);
+	vector<future<void>> futures(thread_count);  // This vector is needed to postpone dtor of future
 	const size_t page = v.size() / thread_count;
-	uint8_t k = 0;
-	for ( ; k < thread_count - 1; ++k )
+	uint8_t k;
+	for ( k = 0; k < thread_count - 1; ++k )
 		futures.push_back( async(FillRandom, ref(v), k * page, page) );
 	futures.push_back( async(FillRandom, ref(v), k * page, v.size() - k * page) );
 //	for ( auto& f : futures )  f.get();  // Here this is not necessarily
 }
 
-template <typename Container> void Print(const Container& c)
+template <typename Container> 
+void Print(const Container& c)
 {
 	for ( auto elem : c )  cout << elem << ' ';
 	cout << '\n';
@@ -86,23 +86,20 @@ void F2()  // async with time measuring
 {
 	using namespace std::chrono;
 
-	vector<int> v;
-	v.resize(5'000'000);
+	vector<int> v(5'000'000);
 
 	auto t = steady_clock::now();
 	FillRandom(v, 0, v.size());
 	auto dur = steady_clock::now() - t;
 	cout << "FillRandom (1 thread): " 
 		 << duration_cast<milliseconds>(dur).count() << " ms\n";
-//	Print(v);
 
 	t = steady_clock::now();
-	FillRandomMultiThread(v, 4);
+	FillRandomAsync(v, 4);
 	dur = steady_clock::now() - t;
-	cout << "FillRandom (4 thread): " 
+	cout << "FillRandom (4 threads): " 
          << duration_cast<milliseconds>(dur).count() << " ms\n";
-//	Print(v);
-	}
+}
 
 
 //-----------------------------------------------------------------------------
@@ -183,13 +180,13 @@ shared_mutex mx; // a mutex that can be shared
 void Reader()  // Many readers
 {
 	shared_lock lck {mx}; // Other readers can access also
-	// ... read ... 
+	// read
 }
 
 void Writer()  // The only one writer
 {
 	unique_lock lck {mx}; // Exclusive (unique) access for the writer
-	// ... write ... 
+	// write
 }
 
 
@@ -198,8 +195,8 @@ void Writer()  // The only one writer
 
 struct Message
 {
-	string str;
 	explicit Message(const string& s) : str {s} {}
+	string str;
 };
 
 queue<Message> msg_queue;
@@ -210,13 +207,13 @@ void Produce()
 {
 	for ( int i = 1; i <= 3; ++i )
 	{
-		Message msg(string("Message #" + to_string(i)));
+		Message msg("Message #"s + to_string(i));
 		this_thread::sleep_for(chrono::milliseconds(400));
 		cout << "Produce(): " << msg.str << '\n';
 		lock_guard<mutex> lock(msg_cond_mutex);
 		msg_queue.push(msg);
 		msg_cond.notify_one();  // Unblocks the waiting thread
-	}  // release lock (at end of scope)
+	}  // release lock
 }
 
 void Consume()
@@ -232,7 +229,7 @@ void Consume()
 	}
 }
 
-void F4()  // Classical example of two threads communicating by passing messages through a queue.
+void F4()  // Classical example of two threads communicating by passing messages through a queue
 {
 	cout << '\n';
 	thread thr1(Produce);
@@ -252,7 +249,8 @@ void DoSomething(promise<double>& pr)
 		result = 14.134725;  // Compute a value for 'result'
 		pr.set_value(result);
 	}
-	catch ( ... ) {  // Couldn't compute 'result'
+	catch ( ... )  // Couldn't compute 'result'
+	{
 		pr.set_exception(current_exception());
 	}
 		
@@ -267,7 +265,8 @@ void F5()  // promise and future
 		double d = fut.get();  // If necessary, wait for the value to get computed
 		cout << '\n' << d << '\n';
 	}
-	catch ( ... ) {
+	catch ( ... ) 
+	{
 		cerr << "Could not compute d \n";
 	}
 	thr.join();  // Wait for thread completion
@@ -293,7 +292,8 @@ void F6()
 	try {
 		cout << '\n' << fut.get() << '\n';
 	}
-	catch ( invalid_argument& ex ) {
+	catch ( invalid_argument& ex )
+	{
 		cerr <<  ex.what() << '\n';
 	}
 }

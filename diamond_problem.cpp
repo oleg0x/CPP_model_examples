@@ -12,8 +12,8 @@ using std::cout;
 struct Base
 {
 	explicit Base(int i) : data(i) { cout << "Base::Base  " << data << '\n'; }
-	void NonVirtFunc() { cout << "Base::NonVirtFunc " << data << '\n'; }
-	virtual void VirtFunc() { cout << "Base::VirtFunc " << data << '\n'; }
+	void NonVirtFunc()      { cout << "Base::NonVirtFunc " << data << '\n'; }
+	virtual void VirtFunc() { cout << "Base::VirtFunc "    << data << '\n'; }
 	int data;
 };
 
@@ -79,15 +79,14 @@ public:
 int main()
 {
 	Diamond d(5);
-//	d.NonVirtFoo();  // Compilation error: request for member ‘NonVirtFoo’ is ambiguous
-//	d.VirtBar();     // Compilation error: request for member ‘VirtBar’ is ambiguous
+//	d.NonVirtFunc();  // Compilation error: request for member ‘NonVirtFunc’ is ambiguous
+//	d.VirtFunc();     // Compilation error: request for member ‘VirtFunc’ is ambiguous
 	static_cast<Left>(d).NonVirtFunc();
 	static_cast<Right>(d).NonVirtFunc();
 	static_cast<Left>(d).VirtFunc();
 	static_cast<Right>(d).VirtFunc();
 //	static_cast<Base>(d).NonVirtFunc();  // Compilation error: ‘Base’ is an ambiguous base of ‘Diamond’
 //	static_cast<Base>(d).VirtFunc();     // Compilation error: ‘Base’ is an ambiguous base of ‘Diamond’
-//	d.VirtFunc();
 	
 	cout << '\n';
 	VDiamond vd(100);

@@ -30,17 +30,17 @@ TrafficLight& operator ++(TrafficLight& t)  // Prefix version
 {
 	switch ( t )
 	{
-		case TrafficLight::red:     t = TrafficLight::yellow; break;
-		case TrafficLight::yellow:  t = TrafficLight::green;  break;
-		case TrafficLight::green:   t = TrafficLight::red;
+		case TrafficLight::red:     return t = TrafficLight::yellow;
+		case TrafficLight::yellow:  return t = TrafficLight::green;
+		case TrafficLight::green:   return t = TrafficLight::red;
 	}
-	return t;
+	return t;  // To avoid compiler warning;
 }
 
 
 
 TrafficLight operator ++(TrafficLight& t, int)  // Postfix version
-{                                       // ^ means postfix version
+{                                       // ^ this means postfix version
 	const TrafficLight old_t = t;
 	switch ( t )
 	{

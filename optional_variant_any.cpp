@@ -48,7 +48,7 @@ optional<string> Func2(int16_t n)
 any Func3(int16_t n)
 {
 	bool no_problems = (n > 0);
-	if ( no_problems )  return string("Func3: some_string");
+	if ( no_problems )  return "Func3: some_string"s;
 	return -1;
 }
 
@@ -101,7 +101,7 @@ int main()
 		if ( auto s = Func2(i) )  // The same, but shorter
 		{
 			string str = *s;
-			str = s.value();
+			str = s.value();  // The same
 			cout << str << '\n';
 		}
 		else  cout << "Object of std::optional is empty\n";
@@ -110,7 +110,7 @@ int main()
 	cout << '\n';
 	cout << any_cast<string>(Func3(1)) << '\n';
 	cout << any_cast<int>(Func3(-1)) << '\n';
-	
+
 	any a;
 	if ( !a.has_value() )  cout << "Object of std::any is empty\n";
 	a = 3.14;

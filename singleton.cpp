@@ -3,6 +3,7 @@
  *****************************************************************************/
 
 #include <iostream>
+#include <memory>
 
 using std::cout;
 
@@ -22,9 +23,9 @@ public:
 	void Print() const { cout << "Singleton::data_ = " << data_ << '\n'; }
 
 private:
-	Singleton() = default;  // Ctor is private to forbid creation of the object
+	Singleton() { cout << "Singleton()::Singleton()\n"; }  // Ctor is private to forbid creation of the object
 	static Singleton* instance_;
-	int data_;
+	int data_ = 0;
 };
 
 Singleton* Singleton::instance_ = nullptr;
@@ -39,9 +40,8 @@ int main()
 	p->DoSomething(111);
 	p->Print();
 
-	Singleton* another_p = Singleton::Instance();
+	auto another_p = std::unique_ptr<Singleton>(Singleton::Instance());
 	another_p->Print();
 	
-	delete p;
-//	delete another_p;
+//	delete p;  // Runtime error: double free
 }

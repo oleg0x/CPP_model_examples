@@ -14,10 +14,10 @@ using namespace std;
 
 struct Base
 {
-	int data;
 	Base(int i) : data {i} { cout << "Base::Base() " << data << '\n'; }
 	virtual ~Base() { cout << "Base::~Base() " << data << '\n'; }
 	virtual void DoSomething() { cout << "Base::DoSomething() " << data << '\n'; }
+	int data;
 };
 
 
@@ -90,7 +90,7 @@ int main()
 		p2->DoSomething();
 		p1 = p2;
 //		p2 = p1;  // Compilation error: no match for ‘operator=’ (operand types are ‘shared_ptr<Derived>’ and ‘shared_ptr<Base>’)
-		cout << "use_count == " << p1.use_count() << '\n';
+		cout << "use_count == " << p1.use_count() << ", " << p1.use_count() << '\n';
 		p1->DoSomething();
 		p2->DoSomething();  // Also OK
 	}
